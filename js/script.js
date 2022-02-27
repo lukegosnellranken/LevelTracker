@@ -68,9 +68,14 @@ function addToCaughtList() {
         let base = caught[i].base;
         let exp = caught[i].exp;
         let el = document.createElement("li");
-        el.textContent = name + " Lvl: " + level + " Atk: " + base + " Exp: " + exp;
-        el.value = name;
+        let el1 = document.createElement("li");
+        el.textContent = name;
+        el1.textContent = " Lvl: " + level + " Atk: " + base + " Exp: " + exp;
+        el.value = `"${name}"`;
+        el.setAttribute("class", "pkmnName");
+        el1.setAttribute("class", "pkmnStats");
         caughtList.appendChild(el);
+        caughtList.appendChild(el1);
     }
 }
 
@@ -87,9 +92,10 @@ function addToExperienceList() {
         el1.setAttribute("onclick", `addExp("${caught[i].name}")`);
         el2.setAttribute("type", "text");
         el2.setAttribute("id", inputIdName);
+        el2.setAttribute("class", "inputElement");
         experienceList.appendChild(el);
         el.appendChild(el2);
-        experienceList.appendChild(el1);
+        el.appendChild(el1);
         let button = document.getElementById(buttonIdName);
         let input = document.getElementById(inputIdName);
         button.innerHTML = "Add Exp";
