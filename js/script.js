@@ -3,13 +3,14 @@ const all = [];
 const caught = [];
 
 const selectPokemon = document.getElementById("selectPokemon");
+const spriteList = document.getElementById("spriteList");
 const caughtList = document.getElementById("caughtList");
 const experienceList = document.getElementById("experienceList");
 
 
-let bulbasaur = {name:"Bulbasaur", type:"grass", level:4, base:5, exp:4};
-let ivysaur = {name:"Ivysaur", type:"grass", level:6, base:7, exp:6};
-let venusaur = {name:"Venusaur", type:"grass", level:8, base:9, exp:8};
+let bulbasaur = {name:"Bulbasaur", type:"grass", level:4, base:5, exp:4, line:1};
+let ivysaur = {name:"Ivysaur", type:"grass", level:6, base:7, exp:6, line:2};
+let venusaur = {name:"Venusaur", type:"grass", level:8, base:9, exp:8, line:3};
 
 function onPageLoad() {
     console.log("test")
@@ -53,8 +54,29 @@ function addPokemon() {
     console.log(caught);
     console.log(all);
     populateDropdown();
+    addToSpriteList();
     addToCaughtList();
     addToExperienceList();
+}
+
+function addToSpriteList() {
+    // depopulate sprite list
+    spriteList.innerHTML = "";
+
+    // repopulate sprite list
+    for (let i = 0; i < caught.length; i++) {
+        let name = caught[i].name;
+        let li = document.createElement("li");
+        let img = document.createElement("img");
+        li.setAttribute("class", "sprite-item");
+        img.setAttribute("src", "https://img.pokemondb.net/sprites/black-white/anim/normal/" + name.toLowerCase() + ".gif");
+        img.setAttribute("class", "sprite");
+        img.setAttribute("id", name + "-sprite");
+        img.value = `"${name}"`;
+        li.appendChild(img);
+        spriteList.appendChild(li);
+    }
+
 }
 
 function addToCaughtList() {

@@ -20,11 +20,15 @@ body {
     justify-content: center;
 }
 
-#caughtList li{
+#spriteList li {
     list-style: none;
 }
 
-#experienceList li{
+#caughtList li {
+    list-style: none;
+}
+
+#experienceList li {
     list-style: none;
 }
 
@@ -36,6 +40,12 @@ body {
 .pkmnName {
     text-align: center;
     margin-top: 15%;
+}
+
+.sprite-item {
+    margin-top: 15%;
+    display: flex;
+    justify-content: center;
 }
 
 .inputElement {
