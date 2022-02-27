@@ -1,13 +1,9 @@
-
 const all = [];
 const caught = [];
 const caughtObjects = [];
 
 const selectPokemon = document.getElementById("selectPokemon");
-const spriteList = document.getElementById("spriteList");
-const caughtList = document.getElementById("caughtList");
-const experienceList = document.getElementById("experienceList");
-const fullList = document.getElementById("fullList");
+const fullList = document.getElementById("fullList-ul");
 
 
 let bulbasaur = {name:"Bulbasaur", type:"grass", level:4, base:5, exp:4, line:1};
@@ -15,8 +11,10 @@ let ivysaur = {name:"Ivysaur", type:"grass", level:6, base:7, exp:6, line:2};
 let venusaur = {name:"Venusaur", type:"grass", level:8, base:9, exp:8, line:3};
 
 function onPageLoad() {
-    console.log("test")
+    // push pokemon variable objects to all array
     populateAll();
+
+    // populate dropdown with name attribute of all objects in all array
     populateDropdown();
 }
 
@@ -42,29 +40,36 @@ function populateDropdown() {
 }
 
 function addPokemon() {
+    // get value of dropdown option
     let selectedPokemon = selectPokemon.value;
+
+    // if selectedPokemon matches name in all array, add that object to caught array 
     for (let i = 0; i < all.length; i++) {
         if (all[i].name == selectedPokemon) {
             caught.push(all[i]);
         }
     }
+
+    // remove caught pokemon from all array
     for (let i = 0; i < all.length; i++) {
         if (all[i].name == selectedPokemon) {
             all.splice(i,1);
         }
     }
-    console.log(caught);
-    console.log(all);
+    
+    // repopulate dropdown
     populateDropdown();
-    addToSpriteList();
-    addToCaughtList();
-    addToExperienceList();
-
-    createCaughtObject();
+    // rebuild caught object array for captured pokemon
+    buildCaughtObjects();
+    // add caught pokemon to visible list
     addToFullList();
 }
 
-function createCaughtObject() {
+function buildCaughtObjects() {
+    // depopulate caughtObjects array
+    caughtObjects.splice(0, caughtObjects.length);
+
+    // repopulate caughtObjects array
     for (var i = 0; i < caught.length; i++) {
         let obj = {};
         let name = caught[i].name;
@@ -79,6 +84,10 @@ function createCaughtObject() {
 }
 
 function addToFullList() {
+
+    // depopulate full list
+    fullList.innerHTML = "";
+
     for (var i = 0; i < caughtObjects.length; i++) {
 
         let name = caughtObjects[i].name;
@@ -87,9 +96,12 @@ function addToFullList() {
         let ul = document.createElement("ul");
         ul.setAttribute("id", name.toLowerCase() + "-ul")
 
+        let spriteAndStatsUl = document.createElement("ul");
+        spriteAndStatsUl.setAttribute("class", "ss-ul");
+
         let liSprite = document.createElement("li");
         let liStats = document.createElement("li");
-        //let liExp = document.createElement("li");
+        let liExp = experience(caughtObjects[i]);
 
         let img = document.createElement("img");
         img.setAttribute("src", "https://img.pokemondb.net/sprites/black-white/anim/normal/" + name.toLowerCase() + ".gif");
@@ -100,117 +112,62 @@ function addToFullList() {
         statsText.textContent = stats;
         liStats.appendChild(statsText);
 
-        // let experienceItems = document.createElement("ul");
-        // let liExpInput = document.createElement("li");
-        // let liExpButton = document.createElement("li");
-
-        let liExp = experience(caughtObjects[i]);
+        spriteAndStatsUl.appendChild(liSprite);
+        spriteAndStatsUl.appendChild(liStats);
 
         liSprite.appendChild(img);
-        ul.appendChild(liSprite);
-        ul.appendChild(liStats);
+        ul.appendChild(spriteAndStatsUl);
         ul.appendChild(liExp);
         fullList.appendChild(ul);
-    }
-}
 
-function experience(p) {
-    let el = document.createElement("li");
-    let el1 = document.createElement("button");
-    let el2 = document.createElement("input");
-    let inputIdName = p.name + "-exp";
-    let buttonIdName = p.name + "-button";
-    el1.setAttribute("id", buttonIdName);
-    el1.setAttribute("onclick", `addExp("${p.name}")`);
-    el2.setAttribute("type", "text");
-    el2.setAttribute("id", inputIdName);
-    el2.setAttribute("class", "inputElement");
-    //experienceList.appendChild(el);
-    el.appendChild(el2);
-    el.appendChild(el1);
-    let button = document.getElementById(buttonIdName);
-    let input = document.getElementById(inputIdName);
-    button.innerHTML = "Add Exp";
-
-    return el;
-}
-
-function addToSpriteList() {
-    // depopulate sprite list
-    spriteList.innerHTML = "";
-
-    // repopulate sprite list
-    for (let i = 0; i < caught.length; i++) {
-        let name = caught[i].name;
-        let li = document.createElement("li");
-        let img = document.createElement("img");
-        li.setAttribute("class", "sprite-item");
-        img.setAttribute("src", "https://img.pokemondb.net/sprites/black-white/anim/normal/" + name.toLowerCase() + ".gif");
-        img.setAttribute("class", "sprite");
-        img.setAttribute("id", name + "-sprite");
-        img.value = `"${name}"`;
-        li.appendChild(img);
-        spriteList.appendChild(li);
-    }
-
-}
-
-function addToCaughtList() {
-    // depopulate caught list
-    caughtList.innerHTML = "";
-
-    // repopulate caught list
-    for (let i = 0; i < caught.length; i++) {
-        let name = caught[i].name;
-        let level = caught[i].level;
-        let base = caught[i].base;
-        let exp = caught[i].exp;
-        let el = document.createElement("li");
-        let el1 = document.createElement("li");
-        el.textContent = name;
-        el1.textContent = " Lvl: " + level + " Atk: " + base + " Exp: " + exp;
-        el.value = `"${name}"`;
-        el.setAttribute("class", "pkmnName");
-        el1.setAttribute("class", "pkmnStats");
-        caughtList.appendChild(el);
-        caughtList.appendChild(el1);
-    }
-}
-
-function addToExperienceList() {
-    experienceList.innerHTML = "";
-
-    for (let i = 0; i < caught.length; i++) {
-        let el = document.createElement("li");
-        let el1 = document.createElement("button");
-        let el2 = document.createElement("input");
-        let inputIdName = caught[i].name + "-exp";
-        let buttonIdName = caught[i].name + "-button";
-        el1.setAttribute("id", buttonIdName);
-        el1.setAttribute("onclick", `addExp("${caught[i].name}")`);
-        el2.setAttribute("type", "text");
-        el2.setAttribute("id", inputIdName);
-        el2.setAttribute("class", "inputElement");
-        experienceList.appendChild(el);
-        el.appendChild(el2);
-        el.appendChild(el1);
-        let button = document.getElementById(buttonIdName);
+        let inputIdName = (name).toLowerCase() + "-exp";
+        let buttonIdName = (name).toLowerCase() + "-button";
         let input = document.getElementById(inputIdName);
+        let button = document.getElementById(buttonIdName);
         button.innerHTML = "Add Exp";
     }
 }
 
+function experience(p) {
+    let returnedLi = document.createElement("li");
+    let ul = document.createElement("ul");
+    let li1 = document.createElement("li");
+    let li2 = document.createElement("li");
+    let btn = document.createElement("button");
+    let inp = document.createElement("input");
+    let inputIdName = (p.name).toLowerCase() + "-exp";
+    let buttonIdName = (p.name).toLowerCase() + "-button";
+    let ulIdName = (p.name).toLowerCase() + "-li-ul";
+    btn.setAttribute("id", buttonIdName);
+    btn.setAttribute("onclick", `addExp("${p.name}")`);
+    inp.setAttribute("type", "text");
+    inp.setAttribute("id", inputIdName);
+    inp.setAttribute("class", "inputElement");
+    ul.setAttribute("id", ulIdName);
+
+    li1.appendChild(inp);
+    li2.appendChild(btn);
+    ul.appendChild(li1);
+    ul.appendChild(li2);
+    returnedLi.appendChild(ul);
+    
+    return returnedLi;
+}
+
 function addExp(pkmn) {
     console.log("addExp hit:" + pkmn);
-    let input = document.getElementById(pkmn + "-exp");
+    let input = document.getElementById(pkmn.toLowerCase() + "-exp");
+    console.log(input);
     let amount = input.value;
+    console.log(amount);
     for (i = 0; i < caught.length; i++) {
         if (caught[i].name == pkmn) {
             caught[i].exp += parseInt(amount);
         }
     }
     checkLevel();
-    addToCaughtList();
+    buildCaughtObjects();
+    addToFullList();
 }
 
 function checkLevel() {

@@ -15,23 +15,6 @@ body {
     text-align: center;
 }
 
-.lists {
-    display: flex;
-    justify-content: center;
-}
-
-#spriteList li {
-    list-style: none;
-}
-
-#caughtList li {
-    list-style: none;
-}
-
-#experienceList li {
-    list-style: none;
-}
-
 .addPokemon {
     display: flex;
     justify-content: center;
@@ -48,6 +31,25 @@ body {
     justify-content: center;
 }
 
-.inputElement {
-    margin-top: 15%;
+.fullList {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}
+
+#fullList-ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#fullList-ul ul{
+    list-style-type: none;
+    padding: 0;
+    display: inline-block;
+}
+
+.ss-ul li {
+    display: flex;
+    justify-content: center;
 }
