@@ -6,9 +6,9 @@ const selectPokemon = document.getElementById("selectPokemon");
 const fullList = document.getElementById("fullList-ul");
 
 
-let bulbasaur = {name:"Bulbasaur", type:"grass", level:4, base:5, exp:4, line:1};
-let ivysaur = {name:"Ivysaur", type:"grass", level:6, base:7, exp:6, line:2};
-let venusaur = {name:"Venusaur", type:"grass", level:8, base:9, exp:8, line:3};
+let bulbasaur = {name:"Bulbasaur", type:"grass", level:4, base:5, exp:4, stage:1, shiny:0};
+let ivysaur = {name:"Ivysaur", type:"grass", level:6, base:7, exp:6, stage:2, shiny:0};
+let venusaur = {name:"Venusaur", type:"grass", level:8, base:9, exp:8, stage:3, shiny:0};
 
 function onPageLoad() {
     // push pokemon variable objects to all array
@@ -46,6 +46,11 @@ function addPokemon() {
     // if selectedPokemon matches name in all array, add that object to caught array 
     for (let i = 0; i < all.length; i++) {
         if (all[i].name == selectedPokemon) {
+            // shiny chance (1/100)
+            let shinyChance = Math.floor(Math.random() * 3);
+            if (shinyChance == 1) {
+                all[i].shiny = 1;
+            }
             caught.push(all[i]);
         }
     }
@@ -76,9 +81,11 @@ function buildCaughtObjects() {
         let level = caught[i].level;
         let base = caught[i].base;
         let exp = caught[i].exp;
+        let shiny = caught[i].shiny;
         obj.name = name;
         obj.sprite = "https://img.pokemondb.net/sprites/black-white/anim/normal/" + caught[i].name.toLowerCase() + ".gif";
         obj.stats =  " Lvl: " + level + " Atk: " + base + " Exp: " + exp;
+        obj.shiny = shiny;
         caughtObjects.push(obj);
     }
 }
@@ -104,7 +111,12 @@ function addToFullList() {
         let liExp = experience(caughtObjects[i]);
 
         let img = document.createElement("img");
-        img.setAttribute("src", "https://img.pokemondb.net/sprites/black-white/anim/normal/" + name.toLowerCase() + ".gif");
+        
+        if (caughtObjects[i].shiny == 1) {
+            img.setAttribute("src", "https://img.pokemondb.net/sprites/black-white/anim/shiny/" + name.toLowerCase() + ".gif");
+        } else {
+            img.setAttribute("src", "https://img.pokemondb.net/sprites/black-white/anim/normal/" + name.toLowerCase() + ".gif");
+        }
         img.setAttribute("class", "sprite");
         img.setAttribute("id", name + "-sprite");
 
@@ -124,7 +136,7 @@ function addToFullList() {
         let buttonIdName = (name).toLowerCase() + "-button";
         let input = document.getElementById(inputIdName);
         let button = document.getElementById(buttonIdName);
-        button.innerHTML = "Add Exp";
+        button.innerHTML = "+EXP";
     }
 }
 
