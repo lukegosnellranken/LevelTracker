@@ -3,19 +3,23 @@ const caught = [];
 const caughtObjects = [];
 
 const selectPokemon = document.getElementById("selectPokemon");
+const selectPokemonAddBtn = document.getElementById("add");
+const selectPokemonRemove = document.getElementById("selectPokemonRemove");
+const selectPokemonSubBtn = document.getElementById("sub");
 const fullList = document.getElementById("fullList-ul");
 
 
-let bulbasaur = {name:"Bulbasaur", type:"grass", level:4, base:5, exp:4, stage:1, shiny:0};
-let ivysaur = {name:"Ivysaur", type:"grass", level:6, base:7, exp:6, stage:2, shiny:0};
-let venusaur = {name:"Venusaur", type:"grass", level:8, base:9, exp:8, stage:3, shiny:0};
+let bulbasaur = {name:"Bulbasaur", type:"grass", level:4, base:5, exp:4, stage:1, line:"bulbasaur", shiny:0};
+let ivysaur = {name:"Ivysaur", type:"grass", level:6, base:7, exp:6, stage:2, line:"bulbasaur", shiny:0};
+let venusaur = {name:"Venusaur", type:"grass", level:8, base:9, exp:8, stage:3, line:"bulbasaur", shiny:0};
 
 function onPageLoad() {
     // push pokemon variable objects to all array
     populateAll();
-
     // populate dropdown with name attribute of all objects in all array
     populateDropdown();
+    // check for empty all/remove arrays
+    checkEmptyArray();
 }
 
 function populateAll() {
@@ -23,19 +27,52 @@ function populateAll() {
 }
 
 function populateDropdown() {
-    // depopulate dropdown
+    // depopulate Add dropdown
     let i, L = selectPokemon.options.length - 1;
     for(i = L; i >= 0; i--) {
        selectPokemon.remove(i);
     }
 
-    // repopulate dropdown
+    // depopulate Sub dropdown
+    let i2, L2 = selectPokemonRemove.options.length - 1;
+    for(i2 = L2; i2 >= 0; i2--) {
+       selectPokemonRemove.remove(i2);
+    }
+
+    // repopulate Add dropdown
     for (let i = 0; i < all.length; i++) {
         let opt = all[i].name;
         let el = document.createElement("option");
         el.textContent = opt;
         el.value = opt;
         selectPokemon.appendChild(el);
+    }
+
+    // repopulate Sub dropdown
+    for (let i = 0; i < caught.length; i++) {
+        let opt = caught[i].name;
+        let el = document.createElement("option");
+        el.textContent = opt;
+        el.value = opt;
+        selectPokemonRemove.appendChild(el);
+    }
+}
+
+function checkEmptyArray() {
+    if (all.length == 0) {
+        selectPokemon.setAttribute("class", "hideAddRemove");
+        selectPokemonAddBtn.setAttribute("class", "hideAddRemove");
+    } else {
+        selectPokemon.setAttribute("class", "showAddRemove");
+        selectPokemonAddBtn.setAttribute("class", "showAddRemove");
+    }
+
+    if (caught.length == 0) {
+        selectPokemonRemove.setAttribute("class", "hideAddRemove");
+        selectPokemonSubBtn.setAttribute("class", "hideAddRemove");
+    } else {
+        selectPokemonRemove.setAttribute("class", "showAddRemove");
+        selectPokemonSubBtn.setAttribute("class", "showAddRemove");
     }
 }
 
@@ -68,6 +105,36 @@ function addPokemon() {
     buildCaughtObjects();
     // add caught pokemon to visible list
     addToFullList();
+    // check for empty all/remove arrays
+    checkEmptyArray();
+}
+
+function removePokemon() {
+    // get value of dropdown option
+    let selectedPokemon = selectPokemonRemove.value;
+
+    // if selectedPokemon matches name in caught array, add that object to all array 
+    for (let i = 0; i < caught.length; i++) {
+        if (caught[i].name == selectedPokemon) {
+            all.push(caught[i]);
+        }
+    }
+
+    // remove "all" pokemon from caught array
+    for (let i = 0; i < caught.length; i++) {
+        if (caught[i].name == selectedPokemon) {
+            caught.splice(i,1);
+        }
+    }
+
+    // repopulate dropdown
+    populateDropdown();
+    // rebuild caught object array for captured pokemon
+    buildCaughtObjects();
+    // add caught pokemon to visible list
+    addToFullList();
+    // check for empty all/remove arrays
+    checkEmptyArray();
 }
 
 function buildCaughtObjects() {
@@ -111,7 +178,7 @@ function addToFullList() {
         let liExp = experience(caughtObjects[i]);
 
         let img = document.createElement("img");
-        
+
         if (caughtObjects[i].shiny == 1) {
             img.setAttribute("src", "https://img.pokemondb.net/sprites/black-white/anim/shiny/" + name.toLowerCase() + ".gif");
         } else {
