@@ -163,7 +163,6 @@ function buildCaughtObjects() {
 }
 
 function addToFullList() {
-
     // depopulate full list
     fullList.innerHTML = "";
 
@@ -180,43 +179,17 @@ function addToFullList() {
         ul.setAttribute("class", "list-pokemon-li-ul");
         ul.setAttribute("id", name.toLowerCase() + "list-pokemon-li-ul")
 
-        // create and set attributes for sprite/stat li and ul (which goes inside li)
-        let spriteAndStatsLiUl = document.createElement("li");
-        spriteAndStatsLiUl.setAttribute("class", "ss-li-ul");
-        let spriteAndStatsUl = document.createElement("ul");
-        spriteAndStatsUl.setAttribute("class", "ss-ul");
-
-        // create liSprite, liStats, and liExp
-        let liSprite = document.createElement("li");
-        let liStats = document.createElement("li");
-        // run experience function, passing in the current caughtObject. An li containing all experience data is returned.
-        let liExp = experience(caughtObjects[i]);
-
-        let img = document.createElement("img");
-        // grab sprite from external site. normal or shiny depending on caughtObject's shiny value
-        if (caughtObjects[i].shiny == 1) {
-            img.setAttribute("src", "https://img.pokemondb.net/sprites/black-white/anim/shiny/" + name.toLowerCase() + ".gif");
-        } else {
-            img.setAttribute("src", "https://img.pokemondb.net/sprites/black-white/anim/normal/" + name.toLowerCase() + ".gif");
-        }
-        // set img attributes
-        img.setAttribute("class", "sprite");
-        img.setAttribute("id", name + "-sprite");
-
-        // create p element for statsText, set its textContent and add it to liStats (li element)
-        let statsText = document.createElement("p");
-        statsText.textContent = stats;
-        liStats.appendChild(statsText);
-
-        // img < liSprite = liStats < spriteAndStatsUl < spriteAndStatsLiUl
-        liSprite.appendChild(img);
-        spriteAndStatsUl.appendChild(liSprite);
-        spriteAndStatsUl.appendChild(liStats);
-        spriteAndStatsLiUl.appendChild(spriteAndStatsUl);
- 
+        // call spriteStatComponent function
+        let liSS = spriteStatComponent(caughtObjects[i]);
+        // call experienceComponent function
+        let liExp = experienceComponent(caughtObjects[i]);
+        // call tradeComponent function
+        let liT = tradeComponent(caughtObjects[i]);
+        
         // spriteAndStatsLiUl = liExp < ul < li
-        ul.appendChild(spriteAndStatsLiUl);
+        ul.appendChild(liSS);
         ul.appendChild(liExp);
+        ul.appendChild(liT);
         li.appendChild(ul);
         // add completed list item to fullList array
         fullList.appendChild(li);
@@ -225,19 +198,64 @@ function addToFullList() {
         let inputIdName = (name).toLowerCase() + "-exp";
         let input = document.getElementById(inputIdName);
         // get button
-        let buttonIdName = (name).toLowerCase() + "-button";
-        let button = document.getElementById(buttonIdName);
+        let addExpButtonIdName = (name).toLowerCase() + "-add-exp-button";
+        let addExpButton = document.getElementById(addExpButtonIdName);
+        let setLvlButtonIdName = (name).toLowerCase() + "-set-lvl-button";
+        let setLvlButton = document.getElementById(setLvlButtonIdName);
+        let setAtkButtonIdName = (name).toLowerCase() + "-set-atk-button";
+        let setAtkButton = document.getElementById(setAtkButtonIdName);
+        let setExpButtonIdName = (name).toLowerCase() + "-set-exp-button";
+        let setExpButton = document.getElementById(setExpButtonIdName);
         // set +EXP button text
-        button.innerHTML = "+EXP";
+        addExpButton.innerHTML = "+EXP";
+        setLvlButton.innerHTML = "LVL";
+        setAtkButton.innerHTML = "ATK";
+        setExpButton.innerHTML = "EXP";
     }
 }
 
-function experience(p) {
-    // p = caughtObjects[i] from addToFullList()
+function spriteStatComponent(co) {
+    // create and set attributes for sprite/stat li and ul (which goes inside li)
+    let returnedLi = document.createElement("li");
+    returnedLi.setAttribute("class", "ss-li-ul");
+    let spriteAndStatsUl = document.createElement("ul");
+    spriteAndStatsUl.setAttribute("class", "ss-ul");
+
+    // create liSprite, liStats, and liExp
+    let liSprite = document.createElement("li");
+    let liStats = document.createElement("li");
+
+    let img = document.createElement("img");
+    // grab sprite from external site. normal or shiny depending on caughtObject's shiny value
+    if (co.shiny == 1) {
+        img.setAttribute("src", "https://img.pokemondb.net/sprites/black-white/anim/shiny/" + co.name.toLowerCase() + ".gif");
+    } else {
+        img.setAttribute("src", "https://img.pokemondb.net/sprites/black-white/anim/normal/" + co.name.toLowerCase() + ".gif");
+    }
+    // set img attributes
+    img.setAttribute("class", "sprite");
+    img.setAttribute("id", co.name + "-sprite");
+
+    // create p element for statsText, set its textContent and add it to liStats (li element)
+    let statsText = document.createElement("p");
+    statsText.textContent = co.stats;
+    liStats.appendChild(statsText);
+
+    // img < liSprite = liStats < spriteAndStatsUl < returnedLi
+    liSprite.appendChild(img);
+    spriteAndStatsUl.appendChild(liSprite);
+    spriteAndStatsUl.appendChild(liStats);
+    returnedLi.appendChild(spriteAndStatsUl);
+    // return returnedLi to addToFullList()
+    return returnedLi;
+}
+
+function experienceComponent(co) {
+    // co = caughtObjects[i] from addToFullList()
     // create names to be used as id/class names
-    let inputIdName = (p.name).toLowerCase() + "-exp";
-    let buttonIdName = (p.name).toLowerCase() + "-button";
-    let ulIdName = (p.name).toLowerCase() + "-li-ul";
+    let inputIdName = (co.name).toLowerCase() + "-input";
+    let buttonIdName = (co.name).toLowerCase() + "-add-exp-button";
+    let ulIdName = (co.name).toLowerCase() + "add-exp-li-ul";
     // create elements and set attributes
     let returnedLi = document.createElement("li");
     let ul = document.createElement("ul");
@@ -247,11 +265,11 @@ function experience(p) {
     let inp = document.createElement("input");
     returnedLi.setAttribute("class", "exp-li");
     li1.setAttribute("class", "input-li");
-    li2.setAttribute("class", "plusExpBtn-li");
+    li2.setAttribute("class", "addExpBtn-li");
     btn.setAttribute("id", buttonIdName);
-    btn.setAttribute("class", "plusExpBtn");
-    // when +EXP button is clicked, run addExp function, passing in p.name
-    btn.setAttribute("onclick", `addExp("${p.name}")`);
+    btn.setAttribute("class", "addExpBtn");
+    // when +EXP button is clicked, run addExp function, passing in co.name
+    btn.setAttribute("onclick", `addExp("${co.name}")`);
     inp.setAttribute("type", "text");
     inp.setAttribute("id", inputIdName);
     inp.setAttribute("class", "inputElement");
@@ -267,10 +285,52 @@ function experience(p) {
     return returnedLi;
 }
 
+function tradeComponent(co) {
+    // co = caughtObjects[i] from addToFullList()
+    // create elements and set attributes
+    let returnedLi = document.createElement("li");
+    let ul = document.createElement("ul");
+    let li1 = document.createElement("li");
+    let li2 = document.createElement("li");
+    let li3 = document.createElement("li");
+    let btn1 = document.createElement("button");
+    let btn2 = document.createElement("button");
+    let btn3 = document.createElement("button");
+    returnedLi.setAttribute("class", "trade-li");
+    li1.setAttribute("class", "setLvlBtn-li");
+    li2.setAttribute("class", "setAtkBtn-li");
+    li3.setAttribute("class", "setExpBtn-li");
+    btn1.setAttribute("id", (co.name).toLowerCase() + "-set-lvl-button");
+    btn1.setAttribute("class", "setLvlBtn");
+    btn2.setAttribute("id", (co.name).toLowerCase() + "-set-atk-button");
+    btn2.setAttribute("class", "setAtkBtn");
+    btn3.setAttribute("id", (co.name).toLowerCase() + "-set-exp-button");
+    btn3.setAttribute("class", "setExpBtn");
+    // when LVL button is clicked, run setLvl function, passing in co.name
+    btn1.setAttribute("onclick", `setLvl("${co.name}")`);
+    // when ATK button is clicked, run setAtk function, passing in co.name
+    btn2.setAttribute("onclick", `setAtk("${co.name}")`);
+    // when EXP button is clicked, run setExp function, passing in co.name
+    btn3.setAttribute("onclick", `setExp("${co.name}")`);
+    ul.setAttribute("id", (co.name).toLowerCase() + "-trade-li-ul");
+    ul.setAttribute("class", "trade-li-ul");
+    // ((inp < li1) = (btn < li2)) < ul < returnedLi
+    li1.appendChild(btn1);
+    li2.appendChild(btn2);
+    li3.appendChild(btn3);
+    ul.appendChild(li1);
+    ul.appendChild(li2);
+    ul.appendChild(li3);
+    returnedLi.appendChild(ul);
+    // return returnLi to addToFullList()
+    return returnedLi;
+
+}
+
 function addExp(pkmn) {
     // pkmn = p.name from experience()
     // create text input for caught pokemon
-    let input = document.getElementById(pkmn.toLowerCase() + "-exp");
+    let input = document.getElementById(pkmn.toLowerCase() + "-input");
     // set amount to value of entered text in input
     let amount = input.value;
     // iterate through all items in caught array to find the pokemon with the correct name value
@@ -280,7 +340,64 @@ function addExp(pkmn) {
             caught[i].exp += parseInt(amount);
         }
     }
-    // rebuid all
+    // check levels, rebuild caughtObjects, and repopulate full list
+    checkLevel();
+    buildCaughtObjects();
+    addToFullList();
+}
+
+function setLvl(pkmn) {
+    // pkmn = p.name from experience()
+    // create text input for caught pokemon
+    let input = document.getElementById(pkmn.toLowerCase() + "-input");
+    // set amount to value of entered text in input
+    let amount = input.value;
+    // iterate through all items in caught array to find the pokemon with the correct name value
+    for (i = 0; i < caught.length; i++) {
+        if (caught[i].name == pkmn) {
+            // set amount to the pokemon's level value
+            caught[i].level = parseInt(amount);
+        }
+    }
+    // check levels, rebuild caughtObjects, and repopulate full list
+    checkLevel();
+    buildCaughtObjects();
+    addToFullList();
+}
+
+function setAtk(pkmn) {
+    // pkmn = p.name from experience()
+    // create text input for caught pokemon
+    let input = document.getElementById(pkmn.toLowerCase() + "-input");
+    // set amount to value of entered text in input
+    let amount = input.value;
+    // iterate through all items in caught array to find the pokemon with the correct name value
+    for (i = 0; i < caught.length; i++) {
+        if (caught[i].name == pkmn) {
+            // set amount to the pokemon's base value
+            caught[i].base = parseInt(amount);
+        }
+    }
+    // check levels, rebuild caughtObjects, and repopulate full list
+    checkLevel();
+    buildCaughtObjects();
+    addToFullList();
+}
+
+function setExp(pkmn) {
+    // pkmn = p.name from experience()
+    // create text input for caught pokemon
+    let input = document.getElementById(pkmn.toLowerCase() + "-input");
+    // set amount to value of entered text in input
+    let amount = input.value;
+    // iterate through all items in caught array to find the pokemon with the correct name value
+    for (i = 0; i < caught.length; i++) {
+        if (caught[i].name == pkmn) {
+            // set amount to the pokemon's exp value
+            caught[i].exp = parseInt(amount);
+        }
+    }
+    // check levels, rebuild caughtObjects, and repopulate full list
     checkLevel();
     buildCaughtObjects();
     addToFullList();

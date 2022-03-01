@@ -78,10 +78,6 @@ body {
 }
 
 
-
-
-
-
 .ss-li-ul {
     display: flex;
     justify-content: center;
@@ -106,6 +102,12 @@ body {
     width: 70%;
 }
 
-.plusExpBtn-li {
+.addExpBtn-li {
     width: 30%;
+}
+
+
+.trade-li-ul li {
+    display: inline-block;
+    justify-content: center;
 }
